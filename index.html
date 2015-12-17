@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RS Backup</title>
+  <style>
+    body {
+      text-align: center;
+      padding: 100px;
+      font: 16px 'Open Sans', sans-serif;
+    }
+    h1 {
+      font-size: 24px;
+      color: green;
+      margin-bottom: 1em;
+    }
+    p {
+      margin-bottom: 1.5em;
+    }
+    p.hint {
+      font-size: 12px;
+      color: darkgrey;
+    }
+    input#token {
+      width: 90%;
+      max-width: 500px;
+      padding: 10px;
+      text-align: center;
+      font: 24px monospace;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Authorization successful</h1>
+    <p>Copy this token and paste it in your terminal:</p>
+    <p>
+      <input type=text id=token>
+    </p>
+    <p class=hint>(You can revoke this authorization anytime in your storage server's account area.)</p>
+  </main>
+
+  <script>
+    var hashParams = function() {
+      var hash;
+      if (location.hash) {
+        hash = location.hash.substr(1);
+      } else {
+        var hashPos  = location.indexOf('#'),
+        hash = location.substr(hashPos+1);
+      }
+      return hash.split('&').reduce(function (m, kvs) {
+        var kv = kvs.split('=');
+        m[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1]);
+        return m;
+      }, {});
+    }
+
+    var params = hashParams();
+    var token = params.access_token;
+    document.querySelector('input#token').value = token;
+  </script>
+</body>
+</html>
