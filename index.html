@@ -11,7 +11,6 @@
     }
     h1 {
       font-size: 24px;
-      color: green;
       margin-bottom: 1em;
     }
     p {
@@ -28,16 +27,45 @@
       text-align: center;
       font: 24px monospace;
     }
+
+    div#success, div.fail {
+      display: none;
+    }
+
+    #success h1 { color: green; }
+    .fail h1    { color: red; }
   </style>
 </head>
 <body>
   <main>
-    <h1>Authorization successful</h1>
-    <p>Copy this token and paste it in your terminal:</p>
-    <p>
-      <input type=text id=token>
-    </p>
-    <p class=hint>(You can revoke this authorization anytime in your storage server's account area.)</p>
+    <div id=no_action>
+      <h1>RS Backup</h1>
+      <p>
+        You've reached this page outside of an authorization dialog.
+      </p>
+      <p>
+        It belongs to <a href="https://www.npmjs.com/package/rs-backup">RS
+        Backup</a>, a command-line tool for backing up your remoteStorage data.
+      </p>
+    </div>
+    <div id=success>
+      <h1>Authorization successful</h1>
+      <p>Copy this token and paste it in your terminal:</p>
+      <p>
+        <input type=text id=token>
+      </p>
+      <p class=hint>
+        (You can revoke this authorization anytime in your storage server's
+        account area.)
+      </p>
+    </div>
+    <div id=access_denied class=fail>
+      <h1>Authorization denied</h1>
+      <p>
+        Please try again and make sure to approve access for RS Backup in the
+        dialog you see.
+      </p>
+    </div>
   </main>
 
   <script>
@@ -57,8 +85,15 @@
     }
 
     var params = hashParams();
-    var token = params.access_token;
-    document.querySelector('input#token').value = token;
+
+    if (params.access_token) {
+      document.querySelector('input#token').value = params.access_token;
+      document.querySelector('#no_action').style.display = 'none';
+      document.querySelector('#success').style.display = 'block';
+    } else if (params.error) {
+      document.querySelector('#no_action').style.display = 'none';
+      document.querySelector('#access_denied').style.display = 'block';
+    }
   </script>
 </body>
 </html>
